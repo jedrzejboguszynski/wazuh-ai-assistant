@@ -1,0 +1,30 @@
+version: "3.9"
+
+services:
+  wazuh-ai-agent:
+    build: .
+    container_name: wazuh-ai-agent
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    environment:
+      - OPENSEARCH_INDEXES=wazuh-alerts-*,wazuh-monitoring-*,wazuh-states-vulnerabilities-*,wazuh-states-inventory-*
+      - OPENSEARCH_PASSWORD=your_opensearch_password
+      - OPENSEARCH_URL=https://wazuh_IP:9200
+      - OPENSEARCH_USER=read_only_user
+      - OPENSEARCH_VERIFY_SSL=false
+      - LITELLM_API_BASE=litellm_instance_URL
+      - LITELLM_API_KEY=your_api_key
+      - LITELLM_MODEL=your_AI_model
+      - WEB_PASSWORD=your_password_for_web_UI
+      - WEB_USERNAME=admin
+      - AUTO_REFRESH_ENABLED=true
+      - AUTO_REFRESH_INTERVAL=15
+      - DAILY_REPORT_TIME=07:00
+      - SENDGRID_API_KEY=your_api_key
+      - SENDGRID_FROM_EMAIL=from_email
+      - SENDGRID_TO_EMAILS=to_email
+      - DAYS_RANGE=0.25
+      - PYTHONUNBUFFERED=1
+    volumes:
+      - ./data:/app/data

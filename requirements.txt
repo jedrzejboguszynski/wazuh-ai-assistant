@@ -1,0 +1,30 @@
+# Web Framework
+fastapi==0.115.0
+uvicorn[standard]==0.32.0
+websockets==13.1
+itsdangerous==2.2.0
+
+# LangChain and LLM Integration
+langchain==0.3.7
+langchain-community==0.3.5
+langchain-openai==0.2.9
+langchain-huggingface==0.1.2
+pypdf==5.1.0
+
+# Vector Store and Embeddings
+faiss-cpu==1.9.0
+sentence-transformers==3.3.1
+
+# HTTP Client
+requests==2.32.3
+urllib3==2.2.3
+
+# Data Validation
+pydantic==2.10.3
+
+# Daemon Support (optional, for running as service)
+python-daemon==3.1.0
+
+# Email Reports
+sendgrid==6.11.0
+schedule==1.2.0

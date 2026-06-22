@@ -1,0 +1,28 @@
+[Unit]
+Description=Wazuh AI Agent - Security Operations Center Assistant
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=wazuh-ai
+Group=wazuh-ai
+WorkingDirectory=/opt/wazuh-ai-agent
+Environment="PATH=/opt/wazuh-ai-agent/venv/bin:/usr/local/bin:/usr/bin:/bin"
+EnvironmentFile=/opt/wazuh-ai-agent/.env
+
+# Start command
+ExecStart=/opt/wazuh-ai-agent/venv/bin/python3 /opt/wazuh-ai-agent/agentic_soc.py
+
+# Restart policy
+Restart=always
+RestartSec=10
+StartLimitInterval=0
+
+# Logging
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=wazuh-ai-agent
+
+[Install]
+WantedBy=multi-user.target
