@@ -57,7 +57,7 @@ App runs at `http://localhost:8000`.
 
 ---
 
-## 2. systemd Service
+# 2. Systemd Service
 
 ```bash
 # 1. Create dedicated system user
@@ -121,7 +121,7 @@ App runs at `http://localhost:8000`.
 
 ---
 
-## 3. From CLI
+# 3. From CLI
 
 ```bash
 # 1. Install dependencies
