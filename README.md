@@ -40,7 +40,7 @@ Detailed setup guides, advanced configuration options, and troubleshooting tips 
 
 ## Deployment Guide
 
-# 1. Docker Container
+### 1. Docker Container
 
 ```bash
 # 1. Configure environment
@@ -57,7 +57,7 @@ App runs at `http://localhost:8000`.
 
 ---
 
-# 2. Systemd Service
+### 2. Systemd Service
 
 ```bash
 # 1. Create dedicated system user
@@ -121,7 +121,7 @@ App runs at `http://localhost:8000`.
 
 ---
 
-# 3. From CLI
+### 3. From CLI
 
 ```bash
 # 1. Install dependencies
