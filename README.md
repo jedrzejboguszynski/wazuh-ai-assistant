@@ -43,12 +43,10 @@ Detailed setup guides, advanced configuration options, and troubleshooting tips 
 ### 1. Docker Container
 
 ```bash
-# 1. Configure environment
-cp .env .env.backup
-# Edit docker-compose.yml and update environment variables inline
+# 1. Edit docker-compose.yml and update environment variables inline
+nano docker-compose.yml
 
-# 2. Build and start
-docker compose build
+# 2. Start the docker container
 docker compose up -d
 
 ```
@@ -61,60 +59,36 @@ App runs at `http://localhost:8000`.
 
 ```bash
 # 1. Create dedicated system user
-sudo useradd -r -s /usr/sbin/nologin -m -d /home/wazuh-ai wazuh-ai
+sudo useradd -r -m -s /bin/false wazuh-ai
 
-# 2. Create virtual environment
-python3 -m venv /opt/wazuh-ai-agent/venv
-source /opt/wazuh-ai-agent/venv/bin/activate
-pip install -r /opt/wazuh-ai-agent/requirements.txt
+# 2. Pull the repository and change ownership
+cd /opt/
+sudo git clone https://github.com/jedrzejboguszynski/wazuh-ai-assistant.git
+chown -R wazuh-ai:wazuh-ai /opt/wazuh-ai-assistant/
+cd wazuh-ai-assistant/
 
-# 3. Copy files and set ownership
-sudo cp agentic_soc.py .env bot_logo.png /opt/wazuh-ai-agent/
-sudo mkdir -p /opt/wazuh-ai-agent/data /opt/wazuh-ai-agent/.cache/huggingface
-sudo chown -R wazuh-ai:wazuh-ai /opt/wazuh-ai-agent
+# 3. Configure Python virtual environment and install packages
+sudo -u wazuh-ai python3 -m venv venv
+sudo -u wazuh-ai venv/bin/pip install --upgrade pip
+sudo -u wazuh-ai venv/bin/pip install -r requirements.txt
 
 # 4. Edit the .env file and update inline variables
-nano .env
+cp /opt/wazuh-ai-assistant/env.example /opt/wazuh-ai-assistant/.env
+nano /opt/wazuh-ai-assistant/.env
 
 # 4. Create service file
-sudo tee /etc/systemd/system/wazuh-ai-agent.service << 'EOF'
-[Unit]
-Description=Wazuh AI Agent - Security Operations Center Assistant
-After=network-online.target
-Wants=network-online.target
-
-[Service]
-Type=simple
-User=wazuh-ai
-Group=wazuh-ai
-WorkingDirectory=/opt/wazuh-ai-agent
-Environment="PATH=/opt/wazuh-ai-agent/venv/bin:/usr/local/bin:/usr/bin:/bin"
-EnvironmentFile=/opt/wazuh-ai-agent/.env
-
-# Start command
-ExecStart=/opt/wazuh-ai-agent/venv/bin/python3 /opt/wazuh-ai-agent/agentic_soc.py
-
-# Restart policy
-Restart=always
-RestartSec=10
-StartLimitInterval=0
-
-# Logging
-StandardOutput=journal
-StandardError=journal
-SyslogIdentifier=wazuh-ai-agent
-
-[Install]
-WantedBy=multi-user.target
-EOF
+sudo cp /opt/wazuh-ai-assistant/systemd/wazuh-ai-agent.service /etc/systemd/system/
+sudo chown root:root /etc/systemd/system/wazuh-ai-agent.service
+sudo chmod 644 /etc/systemd/system/wazuh-ai-agent.service
 
 # 5. Enable and start
 sudo systemctl daemon-reload
-sudo systemctl enable --now wazuh-ai-agent
+sudo systemctl start wazuh-ai-agent
+sudo systemctl enable wazuh-ai-agent
 
 # 6. Check status
 sudo systemctl status wazuh-ai-agent
-sudo journalctl -u wazuh-ai-agent -f
+sudo journalctl -fu wazuh-ai-agent
 ```
 
 App runs at `http://localhost:8000`.
@@ -130,11 +104,8 @@ pip install -r requirements.txt
 # 2. Load environment
 set -a; source .env; set +a
 
-# 3a. Run directly
+# 3. Run directly
 python agentic_soc.py
-
-# 3b. Run as daemon
-python agentic_soc.py --daemon
 ```
 
 App runs at `http://localhost:8000`. Press `Ctrl+C` to stop.
